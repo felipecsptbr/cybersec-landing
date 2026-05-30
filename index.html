@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cybersec — Introdução à Cybersegurança</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g:#00ff41;--g2:#00cc33;--g3:rgba(0,255,65,0.08);
+  --bg:#020c02;--bg2:#030f03;
+  --border:rgba(0,255,65,0.15);--borderb:rgba(0,255,65,0.4);
+  --text:#d4f5d0;--dim:rgba(212,245,208,0.45);
+  --amber:#ffaa00;--cyan:#00f0ff;--red:#ff3344;
+  --panel:rgba(0,255,65,0.04);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:default}
+
+/* CANVAS */
+#fx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.06}
+
+/* NOISE OVERLAY */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+
+/* SCANLINES */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);pointer-events:none;z-index:1}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:200;padding:.9rem 0;background:rgba(2,12,2,0.88);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.nav-wrap{max-width:1140px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--g);letter-spacing:3px}
+.logo em{color:var(--dim);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--dim);letter-spacing:2px;text-decoration:none;text-transform:uppercase;transition:.2s}
+.nav-links a:hover{color:var(--g)}
+.btn-nav{font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:#020c02;background:var(--g);border:none;padding:.6rem 1.6rem;cursor:pointer;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:.2s}
+.btn-nav:hover{background:#33ff66;box-shadow:0 0 24px rgba(0,255,65,.5)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:8rem 0 5rem;position:relative;overflow:hidden}
+.hero-wrap{max-width:1140px;margin:0 auto;padding:0 2rem;display:grid;grid-template-columns:1.1fr 0.9fr;gap:5rem;align-items:center;position:relative;z-index:2}
+
+/* HERO LEFT */
+.hero-eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem}
+.eyebrow-line{width:32px;height:1px;background:var(--g)}
+.eyebrow-text{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--amber);letter-spacing:4px}
+.badge-live{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--g);background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);padding:.2rem .7rem;letter-spacing:2px;display:flex;align-items:center;gap:.4rem}
+.badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+h1{font-family:'Orbitron',sans-serif;font-size:clamp(2.4rem,4.5vw,4rem);font-weight:900;line-height:1.0;margin-bottom:1.8rem;color:#fff;letter-spacing:-1px}
+h1 .line2{display:block;color:var(--g);text-shadow:0 0 40px rgba(0,255,65,.35)}
+h1 .line3{display:block;color:rgba(255,255,255,.25);font-size:.55em;font-weight:400;letter-spacing:6px;margin-top:.4rem;font-family:'Share Tech Mono',monospace}
+
+.hero-desc{font-size:1.05rem;color:var(--dim);line-height:1.8;margin-bottom:2.5rem;font-weight:300;max-width:480px}
+.hero-desc strong{color:var(--text);font-weight:600}
+
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem}
+.btn-primary{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;color:#020c02;background:var(--g);border:none;padding:1.1rem 2.8rem;cursor:pointer;clip-path:polygon(14px 0%,100% 0%,calc(100% - 14px) 100%,0% 100%);transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:.6rem;position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.2) 50%,transparent 100%);transform:translateX(-100%);transition:.4s}
+.btn-primary:hover{background:#44ff77;box-shadow:0 0 50px rgba(0,255,65,.5);transform:translateY(-2px)}
+.btn-primary:hover::before{transform:translateX(100%)}
+.btn-ghost{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--g);background:transparent;border:1px solid var(--borderb);padding:1.1rem 2rem;cursor:pointer;letter-spacing:1px;transition:.25s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem}
+.btn-ghost:hover{background:var(--g3);border-color:var(--g)}
+
+.hero-meta{display:flex;gap:2.5rem}
+.meta-item{display:flex;flex-direction:column;gap:.2rem}
+.meta-val{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;color:var(--g)}
+.meta-lbl{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:2px}
+
+/* TERMINAL */
+.terminal{background:#040e04;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 0 80px rgba(0,255,65,.08),0 40px 80px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.4)}
+.t-bar{background:rgba(0,255,65,.06);border-bottom:1px solid var(--border);padding:.65rem 1rem;display:flex;align-items:center;gap:.4rem}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff453a}.dy{background:#ffbd2e}.dg{background:var(--g);box-shadow:0 0 5px rgba(0,255,65,.7)}
+.t-title{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--dim);margin-left:.6rem;letter-spacing:1px}
+.t-body{padding:1.4rem 1.6rem;font-family:'Share Tech Mono',monospace;font-size:.75rem;line-height:2;min-height:360px}
+.tl{display:block;opacity:0;animation:fadein .3s forwards}
+@keyframes fadein{to{opacity:1}}
+.tp{color:var(--amber)}.tc{color:var(--g)}.to{color:var(--dim)}.ts{color:#44ffaa}.te{color:var(--red)}.tcy{color:var(--cyan)}.tw{color:#fff}
+.cursor{display:inline-block;width:8px;height:1em;background:var(--g);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+
+/* TICKER */
+.ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(0,255,65,.03);padding:.7rem 0;overflow:hidden;position:relative;z-index:2}
+.ticker-inner{display:flex;gap:4rem;animation:tick 25s linear infinite;white-space:nowrap}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tick-item{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:2px;display:flex;align-items:center;gap:.6rem}
+.tick-item::before{content:'//';color:var(--g)}
+
+/* SECTION */
+.section{padding:7rem 0;position:relative;z-index:2}
+.wrap{max-width:1140px;margin:0 auto;padding:0 2rem}
+.sec-eye{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--amber);letter-spacing:4px;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.sec-eye::before{content:'';width:24px;height:1px;background:var(--amber)}
+h2{font-family:'Orbitron',sans-serif;font-size:clamp(1.7rem,3vw,2.6rem);font-weight:700;color:#fff;line-height:1.15;margin-bottom:1rem}
+h2 .g{color:var(--g)}
+h2 .cy{color:var(--cyan)}
+.sec-sub{font-size:1rem;color:var(--dim);font-weight:300;max-width:560px;line-height:1.7;margin-bottom:3.5rem}
+
+/* MODULES */
+.mod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.mod{background:var(--panel);border:1px solid var(--border);padding:2.2rem;position:relative;overflow:hidden;transition:all .3s;cursor:default}
+.mod::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);transform:scaleX(0);transform-origin:left;transition:.35s}
+.mod:hover{border-color:var(--borderb);background:rgba(0,255,65,.07);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(0,255,65,.05)}
+.mod:hover::after{transform:scaleX(1)}
+.mod-n{font-family:'Orbitron',sans-serif;font-size:4rem;font-weight:900;color:rgba(0,255,65,.07);position:absolute;top:.5rem;right:1.2rem;line-height:1;pointer-events:none;transition:.3s}
+.mod:hover .mod-n{color:rgba(0,255,65,.12)}
+.mod-tag{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:.25rem .8rem;border:1px solid;display:inline-block;margin-bottom:1.2rem}
+.tag-g{color:var(--g);border-color:rgba(0,255,65,.3);background:rgba(0,255,65,.05)}
+.tag-cy{color:var(--cyan);border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.05)}
+.tag-am{color:var(--amber);border-color:rgba(255,170,0,.3);background:rgba(255,170,0,.05)}
+.tag-re{color:var(--red);border-color:rgba(255,51,68,.3);background:rgba(255,51,68,.05)}
+.mod-title{font-family:'Orbitron',sans-serif;font-size:.92rem;font-weight:700;color:#fff;margin-bottom:.8rem;text-transform:uppercase;letter-spacing:1px}
+.mod-desc{font-size:.9rem;color:var(--dim);line-height:1.6;margin-bottom:1.2rem;font-weight:300}
+.mod-list{list-style:none}
+.mod-list li{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--dim);padding:.25rem 0;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(0,255,65,.05);transition:.2s}
+.mod-list li:last-child{border-bottom:none}
+.mod-list li::before{content:'▸';color:var(--g);font-size:.7rem;flex-shrink:0}
+.mod:hover .mod-list li{color:rgba(212,245,208,.65)}
+
+/* OSINT CARD - FULL WIDTH */
+.mod-osint{grid-column:1/-1;background:rgba(0,240,255,.03);border:1px solid rgba(0,240,255,.2);padding:2.5rem}
+.mod-osint::after{background:linear-gradient(90deg,var(--cyan),transparent)}
+.mod-osint:hover{border-color:rgba(0,240,255,.5);background:rgba(0,240,255,.06)}
+.osint-inner{display:grid;grid-template-columns:1fr 2fr;gap:3rem;align-items:start}
+.osint-left .mod-n{position:static;font-size:5rem;color:rgba(0,240,255,.1);line-height:1;margin-bottom:1rem}
+.osint-topics{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.osint-group{}
+.og-title{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--cyan);letter-spacing:3px;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid rgba(0,240,255,.2)}
+
+/* TOOLS */
+.tools-section{background:rgba(0,255,65,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 0}
+.tools-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-top:3rem}
+.tool-card{background:var(--panel);border:1px solid var(--border);padding:1.5rem 1rem;text-align:center;transition:.3s;cursor:default}
+.tool-card:hover{border-color:var(--borderb);background:rgba(0,255,65,.08);transform:translateY(-3px)}
+.tool-icon{font-size:1.6rem;display:block;margin-bottom:.6rem}
+.tool-name{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--g);letter-spacing:1px}
+.tool-cat{font-size:.6rem;color:var(--dim);margin-top:.2rem;font-family:'Share Tech Mono',monospace}
+
+/* INSTRUCTOR */
+.instructor{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.inst-visual{position:relative}
+.inst-frame{background:var(--panel);border:1px solid var(--border);padding:2.5rem;position:relative}
+.inst-frame::before{content:'';position:absolute;top:-1px;left:2rem;right:2rem;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.inst-avatar{width:100px;height:100px;border-radius:4px;background:linear-gradient(135deg,rgba(0,255,65,.15),rgba(0,240,255,.05));border:1px solid var(--borderb);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:var(--g);margin-bottom:1.5rem}
+.inst-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:.3rem}
+.inst-role{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--g);letter-spacing:2px;margin-bottom:1.5rem}
+.inst-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.5rem}
+.ist{text-align:center}
+.ist-n{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:var(--g)}
+.ist-l{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--dim);letter-spacing:1px;margin-top:.2rem}
+.inst-bio{font-size:.95rem;color:var(--dim);line-height:1.8;font-weight:300}
+.inst-badges{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
+.ibadge{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--amber);border:1px solid rgba(255,170,0,.3);background:rgba(255,170,0,.05);padding:.25rem .8rem;letter-spacing:1px}
+
+/* CTA SECTION */
+.cta-wrap{position:relative;overflow:hidden;background:var(--bg2);border:1px solid var(--border);padding:5rem 4rem;text-align:center}
+.cta-wrap::before{content:'ACCESS_GRANTED';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',sans-serif;font-size:min(10vw,7rem);font-weight:900;color:rgba(0,255,65,.025);white-space:nowrap;pointer-events:none;letter-spacing:10px}
+.cta-wrap::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),var(--cyan),var(--g),transparent)}
+.price-box{display:inline-flex;flex-direction:column;align-items:center;background:rgba(0,255,65,.05);border:1px solid var(--borderb);padding:2rem 4rem;margin:2.5rem 0;position:relative}
+.price-box::before,.price-box::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--g);border-style:solid}
+.price-box::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.price-box::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.price-from{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:3px;margin-bottom:.5rem}
+.price-val{font-family:'Orbitron',sans-serif;font-size:3.2rem;font-weight:900;color:var(--g);text-shadow:0 0 40px rgba(0,255,65,.4);line-height:1}
+.price-sub{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:2px;margin-top:.5rem}
+.guarantee{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:1.5rem}
+.guar-icon{font-size:1.2rem}
+.guar-text{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:2px}
+
+/* FOOTER */
+footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-index:2}
+.foot-inner{max-width:1140px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.foot-logo{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:900;color:var(--g)}
+.foot-copy{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:2px}
+
+/* GLITCH */
+@keyframes glitch{
+  0%,88%,100%{clip-path:none;transform:none;text-shadow:0 0 40px rgba(0,255,65,.35)}
+  90%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(-4px);text-shadow:-4px 0 rgba(255,51,68,.6),4px 0 rgba(0,240,255,.6)}
+  92%{clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translateX(4px)}
+  94%{clip-path:none;transform:none}
+}
+.glitch{animation:glitch 7s infinite}
+
+/* SCROLL LINE */
+@keyframes scan{0%{top:-2%}100%{top:102%}}
+.hero::before{content:'';position:absolute;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,65,.2),transparent);animation:scan 8s linear infinite;z-index:1}
+
+@media(max-width:900px){
+  .hero-wrap,.instructor{grid-template-columns:1fr;gap:3rem}
+  .mod-grid{grid-template-columns:1fr}
+  .mod-osint .osint-inner{grid-template-columns:1fr}
+  .osint-topics{grid-template-columns:1fr 1fr}
+  .tools-grid{grid-template-columns:repeat(3,1fr)}
+  .foot-inner{flex-direction:column;gap:1rem;text-align:center}
+  .hero-wrap > div:last-child{display:none}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-wrap">
+    <div class="logo"><em>root@</em>cybersec<em>:~$</em> _</div>
+    <div class="nav-links">
+      <a href="#modulos">Módulos</a>
+      <a href="#osint">OSINT</a>
+      <a href="#ferramentas">Ferramentas</a>
+      <a href="#inscricao">Inscrever</a>
+    </div>
+    <button class="btn-nav" onclick="document.getElementById('inscricao').scrollIntoView({behavior:'smooth'})">▶ GARANTIR VAGA</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-wrap">
+    <div>
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">MINI CURSO // 2025</span>
+        <div class="badge-live">INSCRIÇÕES ABERTAS</div>
+      </div>
+
+      <h1>
+        INTRODUÇÃO À
+        <span class="line2 glitch">CYBER<br>SEGURANÇA</span>
+        <span class="line3">v1.0 // DO ZERO AO AVANÇADO</span>
+      </h1>
+
+      <p class="hero-desc">
+        <strong>4 aulas intensivas</strong> que te levam do zero ao conhecimento real de segurança digital. Ferramentas usadas por profissionais, laboratórios práticos e um módulo exclusivo de <strong>OSINT</strong>.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#inscricao" class="btn-primary" onclick="document.getElementById('inscricao').scrollIntoView({behavior:'smooth'});return false">
+          ⚡ QUERO ME INSCREVER
+        </a>
+        <a href="#modulos" class="btn-ghost" onclick="document.getElementById('modulos').scrollIntoView({behavior:'smooth'});return false">
+          VER CONTEÚDO →
+        </a>
+      </div>
+
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-val">5</span>
+          <span class="meta-lbl">MÓDULOS</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-val">100%</span>
+          <span class="meta-lbl">PRÁTICO</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-val">1×</span>
+          <span class="meta-lbl">R$ 97,90</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TERMINAL -->
+    <div class="terminal">
+      <div class="t-bar">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <span class="t-title">student@cybersec-lab — bash</span>
+      </div>
+      <div class="t-body" id="tb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="tick"></div>
+</div>
+
+<!-- MÓDULOS -->
+<section class="section" id="modulos">
+  <div class="wrap">
+    <div class="sec-eye">CURRICULUM.load()</div>
+    <h2>CONTEÚDO <span class="g">COMPLETO</span> DO CURSO</h2>
+    <p class="sec-sub">Cada módulo foi desenhado para te dar habilidades reais, não teoria vazia. Do fundamento ao ataque e defesa.</p>
+
+    <div class="mod-grid">
+
+      <div class="mod">
+        <span class="mod-n">01</span>
+        <span class="mod-tag tag-g">MÓDULO 01 // FUNDAMENTOS</span>
+        <div class="mod-title">O Mundo da Cybersegurança</div>
+        <p class="mod-desc">Entenda o ecossistema e descubra onde você pode atuar nesse mercado em expansão.</p>
+        <ul class="mod-list">
+          <li>Fundamentos e CIA Triad</li>
+          <li>Áreas: Red, Blue, Purple Team</li>
+          <li>Oportunidades e salários</li>
+          <li>Roteiro de carreira profissional</li>
+        </ul>
+      </div>
+
+      <div class="mod">
+        <span class="mod-n">02</span>
+        <span class="mod-tag tag-re">MÓDULO 02 // ATAQUES</span>
+        <div class="mod-title">Como os Ataques Acontecem</div>
+        <p class="mod-desc">Pense como um atacante. Entenda cada fase de um ataque real do começo ao fim.</p>
+        <ul class="mod-list">
+          <li>Kill Chain e MITRE ATT&CK</li>
+          <li>Engenharia social e phishing</li>
+          <li>Malware, ransomware na prática</li>
+          <li>Case real: anatomia de um breach</li>
+        </ul>
+      </div>
+
+      <div class="mod">
+        <span class="mod-n">03</span>
+        <span class="mod-tag tag-am">MÓDULO 03 // FERRAMENTAS</span>
+        <div class="mod-title">Ferramentas da Cybersegurança</div>
+        <p class="mod-desc">Mãos na massa com o arsenal usado por pentesters e analistas ao redor do mundo.</p>
+        <ul class="mod-list">
+          <li>Nmap, Nessus e Nikto</li>
+          <li>Burp Suite para web hacking</li>
+          <li>Metasploit Framework</li>
+          <li>Wireshark e análise de tráfego</li>
+        </ul>
+      </div>
+
+      <div class="mod">
+        <span class="mod-n">04</span>
+        <span class="mod-tag tag-g">MÓDULO 04 // DEFESA</span>
+        <div class="mod-title">Defesa, Ética e Projeto Final</div>
+        <p class="mod-desc">Boas práticas, responsabilidade profissional e simulação completa de incidente.</p>
+        <ul class="mod-list">
+          <li>Hardening de sistemas</li>
+          <li>Ética hacker e legislação BR</li>
+          <li>Incident Response na prática</li>
+          <li>Certificado de participação</li>
+        </ul>
+      </div>
+
+      <!-- OSINT FULL WIDTH -->
+      <div class="mod mod-osint" id="osint">
+        <div class="osint-inner">
+          <div class="osint-left">
+            <div class="mod-n" style="position:static;font-size:5rem;color:rgba(0,240,255,.12);line-height:1;margin-bottom:1.2rem">★</div>
+            <span class="mod-tag tag-cy">MÓDULO BÔNUS // EXCLUSIVO</span>
+            <div class="mod-title" style="color:var(--cyan);font-size:1.1rem;margin-top:.5rem">OSINT<br>Inteligência em<br>Fontes Abertas</div>
+            <p class="mod-desc" style="margin-top:1rem;margin-bottom:0">O módulo mais poderoso do curso. Aprenda a encontrar qualquer informação que esteja publicamente exposta — como fazem os melhores investigadores e hunters do mundo.</p>
+          </div>
+          <div>
+            <div class="osint-topics">
+              <div class="osint-group">
+                <div class="og-title">RECONHECIMENTO</div>
+                <ul class="mod-list">
+                  <li>Google Dorks avançados</li>
+                  <li>Shodan & Censys</li>
+                  <li>WHOIS e registros DNS</li>
+                  <li>Metadados de arquivos</li>
+                </ul>
+              </div>
+              <div class="osint-group">
+                <div class="og-title">FERRAMENTAS</div>
+                <ul class="mod-list">
+                  <li>theHarvester</li>
+                  <li>Maltego & SpiderFoot</li>
+                  <li>OSINT Framework</li>
+                  <li>Recon-ng na prática</li>
+                </ul>
+              </div>
+              <div class="osint-group">
+                <div class="og-title">INVESTIGAÇÃO</div>
+                <ul class="mod-list">
+                  <li>Redes sociais & SOCMINT</li>
+                  <li>Geolocalização de imagens</li>
+                  <li>Busca em dark web</li>
+                  <li>Case real completo</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<div class="tools-section" id="ferramentas">
+  <div class="wrap">
+    <div class="sec-eye">ARSENAL.init()</div>
+    <h2>FERRAMENTAS <span class="g">REAIS</span> QUE VOCÊ VAI USAR</h2>
+    <div class="tools-grid">
+      <div class="tool-card"><span class="tool-icon">🗺️</span><div class="tool-name">Nmap</div><div class="tool-cat">Port Scanner</div></div>
+      <div class="tool-card"><span class="tool-icon">🦈</span><div class="tool-name">Wireshark</div><div class="tool-cat">Packet Analysis</div></div>
+      <div class="tool-card"><span class="tool-icon">💣</span><div class="tool-name">Metasploit</div><div class="tool-cat">Exploitation</div></div>
+      <div class="tool-card"><span class="tool-icon">🕷️</span><div class="tool-name">Burp Suite</div><div class="tool-cat">Web Hacking</div></div>
+      <div class="tool-card"><span class="tool-icon">🔍</span><div class="tool-name">Shodan</div><div class="tool-cat">OSINT / IoT</div></div>
+      <div class="tool-card"><span class="tool-icon">🌐</span><div class="tool-name">Maltego</div><div class="tool-cat">OSINT Graph</div></div>
+      <div class="tool-card"><span class="tool-icon">🔎</span><div class="tool-name">theHarvester</div><div class="tool-cat">Email Recon</div></div>
+      <div class="tool-card"><span class="tool-icon">🧪</span><div class="tool-name">Nessus</div><div class="tool-cat">Vuln Scanner</div></div>
+      <div class="tool-card"><span class="tool-icon">🐧</span><div class="tool-name">Kali Linux</div><div class="tool-cat">OS Pentest</div></div>
+      <div class="tool-card"><span class="tool-icon">🕸️</span><div class="tool-name">SpiderFoot</div><div class="tool-cat">OSINT Auto</div></div>
+      <div class="tool-card"><span class="tool-icon">🔗</span><div class="tool-name">Recon-ng</div><div class="tool-cat">OSINT Framework</div></div>
+      <div class="tool-card"><span class="tool-icon">📡</span><div class="tool-name">Aircrack-ng</div><div class="tool-cat">Wireless</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="section" id="inscricao">
+  <div class="wrap">
+    <div class="cta-wrap">
+      <div class="sec-eye" style="justify-content:center">ACESSO_LIBERADO.exe</div>
+      <h2 style="text-align:center">TRANSFORME CURIOSIDADE<br>EM <span class="g">CONHECIMENTO REAL</span></h2>
+      <p style="font-size:1rem;color:var(--dim);font-weight:300;max-width:500px;margin:.8rem auto 0;line-height:1.7;text-align:center">Aprenda. Pratique. Proteja. Evolua.<br>Junte-se a quem está construindo o futuro da segurança digital.</p>
+
+      <div class="price-box">
+        <span class="price-from">ACESSO COMPLETO POR APENAS</span>
+        <span class="price-val">R$ 97,90</span>
+        <span class="price-sub">PAGAMENTO ÚNICO // 1× SEM JUROS</span>
+      </div>
+
+      <a href="#" class="btn-primary" style="font-size:.8rem;padding:1.3rem 4rem;margin-bottom:1.5rem">
+        ⚡ GARANTIR MINHA VAGA AGORA
+      </a>
+
+      <div class="guarantee">
+        <span class="guar-icon">🔒</span>
+        <span class="guar-text">PAGAMENTO SEGURO // ACESSO IMEDIATO // CERTIFICADO INCLUSO</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-logo">CYBERSEC.EDU</div>
+    <div class="foot-copy">// APRENDA. PRATIQUE. PROTEJA. EVOLUA. — 2025</div>
+  </div>
+</footer>
+
+<script>
+// MATRIX CANVAS
+const cv=document.getElementById('fx'),cx=cv.getContext('2d');
+function resize(){cv.width=innerWidth;cv.height=innerHeight}
+resize();window.addEventListener('resize',resize);
+const chars='01アイウカキクサシスタチツABCDEFGHIJKLMNOPQRSTUVWXYZ<>/{}[]!@#$%';
+let cols=Math.floor(innerWidth/16),drops=Array(cols).fill(1);
+function matrix(){
+  cx.fillStyle='rgba(2,12,2,0.05)';cx.fillRect(0,0,cv.width,cv.height);
+  drops.forEach((y,i)=>{
+    const c=chars[Math.floor(Math.random()*chars.length)];
+    cx.globalAlpha=Math.random()*.45+.2;
+    cx.fillStyle=Math.random()>.97?'#fff':Math.random()>.9?'#00ffaa':'#00ff41';
+    cx.font='13px Share Tech Mono,monospace';
+    cx.fillText(c,i*16,y*16);
+    cx.globalAlpha=1;
+    if(y*16>cv.height&&Math.random()>.975)drops[i]=0;
+    drops[i]++;
+  });
+}
+setInterval(matrix,55);
+
+// TERMINAL TYPEWRITER
+const lines=[
+  {t:'p',v:'student@lab:~$ '},
+  {t:'c',v:'nmap -sV -O 192.168.1.1'},
+  {t:'o',v:'Starting Nmap 7.94...'},
+  {t:'s',v:'PORT     STATE  SERVICE   VERSION'},
+  {t:'s',v:'22/tcp   open   ssh       OpenSSH 8.9'},
+  {t:'s',v:'80/tcp   open   http      Apache 2.4.54'},
+  {t:'e',v:'3306/tcp open   mysql     MySQL 5.7.39 [VULN]'},
+  {t:'o',v:''},
+  {t:'p',v:'student@lab:~$ '},
+  {t:'c',v:'python3 osint_scan.py --target example.com'},
+  {t:'cy',v:'[OSINT] Enumerating subdomains...'},
+  {t:'s',v:'[+] Found: mail.example.com → 104.21.x.x'},
+  {t:'s',v:'[+] Found: admin.example.com → 172.67.x.x'},
+  {t:'cy',v:'[+] GitHub leak detected: API_KEY exposed'},
+  {t:'e',v:'[!] CRITICAL: credentials in public repo'},
+  {t:'o',v:''},
+  {t:'p',v:'student@lab:~$ '},
+  {t:'c',v:''},
+];
+const tb=document.getElementById('tb');
+let li=0,ci=0,typing=false;
+function nextLine(){
+  if(li>=lines.length)return;
+  const l=lines[li];
+  const span=document.createElement('span');
+  span.className=`tl t${l.t}`;
+  span.style.animationDelay='0s';
+  tb.appendChild(span);
+  if(l.t==='p'||l.t==='c'){
+    typing=true;
+    let idx=0;
+    const iv=setInterval(()=>{
+      if(idx<l.v.length){span.textContent=l.v.slice(0,++idx);tb.scrollTop=tb.scrollHeight;}
+      else{clearInterval(iv);typing=false;li++;setTimeout(nextLine,l.t==='c'?400:100);}
+    },l.t==='c'?55:20);
+  } else {
+    span.textContent=l.v;
+    tb.scrollTop=tb.scrollHeight;
+    li++;setTimeout(nextLine,250);
+  }
+  if(li===lines.length){
+    const cur=document.createElement('span');
+    cur.className='cursor';tb.appendChild(cur);
+  }
+}
+setTimeout(nextLine,800);
+
+// TICKER
+const items=['CYBERSEGURANÇA','ETHICAL HACKING','OSINT','PENTEST','BUG BOUNTY','NETWORK SECURITY','WEB HACKING','MALWARE ANALYSIS','THREAT HUNTING','INCIDENT RESPONSE','CRYPTOGRAPHY','REVERSE ENGINEERING'];
+const tic=document.getElementById('tick');
+[...items,...items].forEach(t=>{
+  const d=document.createElement('div');
+  d.className='tick-item';d.textContent=t;tic.appendChild(d);
+});
+</script>
+</body>
+</html>
