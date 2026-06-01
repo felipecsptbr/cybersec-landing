@@ -8,202 +8,256 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --g:#00ff41;--g2:#00cc33;--g3:rgba(0,255,65,0.08);
-  --bg:#020c02;--bg2:#030f03;
-  --border:rgba(0,255,65,0.15);--borderb:rgba(0,255,65,0.4);
-  --text:#d4f5d0;--dim:rgba(212,245,208,0.45);
-  --amber:#ffaa00;--cyan:#00f0ff;--red:#ff3344;
-  --panel:rgba(0,255,65,0.04);
+  --g:#00ff41;--g2:#00cc33;--g3:rgba(0,255,65,0.14);
+  --bg:#010801;--bg2:#011201;
+  --border:rgba(0,255,65,0.22);--borderb:rgba(0,255,65,0.55);
+  --text:#edfce8;--dim:rgba(220,255,215,0.62);
+  --amber:#ffd000;--cyan:#00eeff;--red:#ff1a33;
+  --panel:rgba(0,255,65,0.06);
 }
 html{scroll-behavior:smooth}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:default}
 
-/* CANVAS */
-#fx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.06}
+#fx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.12}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.3}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:1}
 
-/* NOISE OVERLAY */
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-
-/* SCANLINES */
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);pointer-events:none;z-index:1}
-
-/* NAV */
-nav{position:fixed;top:0;width:100%;z-index:200;padding:.9rem 0;background:rgba(2,12,2,0.88);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
-.nav-wrap{max-width:1140px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--g);letter-spacing:3px}
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:200;padding:.9rem 0;background:rgba(1,8,1,0.94);border-bottom:1px solid rgba(0,255,65,.25);backdrop-filter:blur(24px)}
+.nav-wrap{max-width:1160px;margin:0 auto;padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--g);letter-spacing:3px;text-shadow:0 0 14px rgba(0,255,65,.5)}
 .logo em{color:var(--dim);font-style:normal}
-.nav-links{display:flex;align-items:center;gap:2rem}
-.nav-links a{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--dim);letter-spacing:2px;text-decoration:none;text-transform:uppercase;transition:.2s}
-.nav-links a:hover{color:var(--g)}
-.btn-nav{font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:#020c02;background:var(--g);border:none;padding:.6rem 1.6rem;cursor:pointer;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:.2s}
-.btn-nav:hover{background:#33ff66;box-shadow:0 0 24px rgba(0,255,65,.5)}
+.nav-links{display:flex;align-items:center;gap:2.2rem}
+.nav-links a{font-family:'Share Tech Mono',monospace;font-size:.66rem;color:var(--dim);letter-spacing:2px;text-decoration:none;text-transform:uppercase;transition:.2s}
+.nav-links a:hover{color:var(--g);text-shadow:0 0 10px rgba(0,255,65,.55)}
+.btn-nav{font-family:'Orbitron',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:#010801;background:var(--g);border:none;padding:.65rem 1.7rem;cursor:pointer;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:.2s}
+.btn-nav:hover{background:#55ff80;box-shadow:0 0 32px rgba(0,255,65,.65)}
 
-/* HERO */
+/* ── HERO ── */
 .hero{min-height:100vh;display:flex;align-items:center;padding:8rem 0 5rem;position:relative;overflow:hidden}
-.hero-wrap{max-width:1140px;margin:0 auto;padding:0 2rem;display:grid;grid-template-columns:1.1fr 0.9fr;gap:5rem;align-items:center;position:relative;z-index:2}
+.hero-wrap{max-width:1160px;margin:0 auto;padding:0 2.5rem;display:grid;grid-template-columns:1.15fr 0.85fr;gap:5rem;align-items:center;position:relative;z-index:2}
 
-/* HERO LEFT */
 .hero-eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem}
-.eyebrow-line{width:32px;height:1px;background:var(--g)}
-.eyebrow-text{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--amber);letter-spacing:4px}
-.badge-live{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--g);background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);padding:.2rem .7rem;letter-spacing:2px;display:flex;align-items:center;gap:.4rem}
-.badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g);animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.eyebrow-line{width:36px;height:1px;background:var(--g);box-shadow:0 0 8px var(--g)}
+.eyebrow-text{font-family:'Share Tech Mono',monospace;font-size:.64rem;color:var(--amber);letter-spacing:4px;text-shadow:0 0 10px rgba(255,208,0,.45)}
+.badge-live{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--g);background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.38);padding:.22rem .75rem;letter-spacing:2px;display:flex;align-items:center;gap:.45rem}
+.badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--g);animation:bpulse 1.5s ease-in-out infinite}
+@keyframes bpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
 
-h1{font-family:'Orbitron',sans-serif;font-size:clamp(2.4rem,4.5vw,4rem);font-weight:900;line-height:1.0;margin-bottom:1.8rem;color:#fff;letter-spacing:-1px}
-h1 .line2{display:block;color:var(--g);text-shadow:0 0 40px rgba(0,255,65,.35)}
-h1 .line3{display:block;color:rgba(255,255,255,.25);font-size:.55em;font-weight:400;letter-spacing:6px;margin-top:.4rem;font-family:'Share Tech Mono',monospace}
+h1{font-family:'Orbitron',sans-serif;font-size:clamp(2.4rem,4.5vw,4.1rem);font-weight:900;line-height:1.0;margin-bottom:1.6rem;color:#fff;letter-spacing:-1px}
+h1 .line2{display:block;color:var(--g);text-shadow:0 0 70px rgba(0,255,65,.5),0 0 140px rgba(0,255,65,.18)}
+h1 .line3{display:block;color:rgba(255,255,255,.25);font-size:.52em;font-weight:400;letter-spacing:6px;margin-top:.45rem;font-family:'Share Tech Mono',monospace}
 
-.hero-desc{font-size:1.05rem;color:var(--dim);line-height:1.8;margin-bottom:2.5rem;font-weight:300;max-width:480px}
-.hero-desc strong{color:var(--text);font-weight:600}
+.hero-desc{font-size:1.1rem;line-height:1.9;margin-bottom:0;font-weight:400;max-width:500px;color:rgba(225,255,220,.75)}
+.hero-desc strong{color:#fff;font-weight:700}
 
-.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem}
-.btn-primary{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;color:#020c02;background:var(--g);border:none;padding:1.1rem 2.8rem;cursor:pointer;clip-path:polygon(14px 0%,100% 0%,calc(100% - 14px) 100%,0% 100%);transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:.6rem;position:relative;overflow:hidden}
-.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.2) 50%,transparent 100%);transform:translateX(-100%);transition:.4s}
-.btn-primary:hover{background:#44ff77;box-shadow:0 0 50px rgba(0,255,65,.5);transform:translateY(-2px)}
+/* CALLOUT */
+.hero-callout{
+  position:relative;margin-top:1.4rem;
+  padding:1.2rem 1.5rem 1.4rem 1.7rem;
+  background:linear-gradient(115deg,rgba(0,255,65,.1) 0%,rgba(0,238,255,.06) 100%);
+  border:1px solid rgba(0,255,65,.32);
+  border-left:3px solid var(--g);
+  box-shadow:0 0 50px rgba(0,255,65,.08),inset 0 0 40px rgba(0,255,65,.03);
+  overflow:hidden;
+}
+.hero-callout::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,255,65,.05) 50%,transparent);
+  animation:sheen 5s ease-in-out infinite;
+}
+@keyframes sheen{0%,100%{transform:translateX(-110%)}50%{transform:translateX(110%)}}
+.callout-tag{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--amber);letter-spacing:3px;text-shadow:0 0 8px rgba(255,208,0,.5);display:block;margin-bottom:.6rem;position:relative;z-index:1}
+.callout-body{font-size:1.08rem;font-weight:600;line-height:1.65;color:#fff;position:relative;z-index:1}
+.callout-body .hl-g{color:var(--g);text-shadow:0 0 16px rgba(0,255,65,.65)}
+.callout-body .hl-cy{color:var(--cyan);text-shadow:0 0 16px rgba(0,238,255,.65)}
+.callout-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;position:relative;z-index:1}
+.chip{font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:.25rem .75rem;border:1px solid;letter-spacing:1px}
+.chip-g{color:var(--g);border-color:rgba(0,255,65,.4);background:rgba(0,255,65,.07);text-shadow:0 0 5px rgba(0,255,65,.4)}
+.chip-cy{color:var(--cyan);border-color:rgba(0,238,255,.4);background:rgba(0,238,255,.07);text-shadow:0 0 5px rgba(0,238,255,.4)}
+.chip-am{color:var(--amber);border-color:rgba(255,208,0,.38);background:rgba(255,208,0,.06);text-shadow:0 0 5px rgba(255,208,0,.4)}
+.chip-re{color:var(--red);border-color:rgba(255,26,51,.38);background:rgba(255,26,51,.06);text-shadow:0 0 5px rgba(255,26,51,.4)}
+
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;margin-bottom:3rem}
+.btn-primary{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:2px;color:#010801;background:var(--g);border:none;padding:1.1rem 2.8rem;cursor:pointer;clip-path:polygon(14px 0%,100% 0%,calc(100% - 14px) 100%,0% 100%);transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:.6rem;position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25) 50%,transparent);transform:translateX(-100%);transition:.4s}
+.btn-primary:hover{background:#55ff80;box-shadow:0 0 65px rgba(0,255,65,.55);transform:translateY(-2px)}
 .btn-primary:hover::before{transform:translateX(100%)}
 .btn-ghost{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--g);background:transparent;border:1px solid var(--borderb);padding:1.1rem 2rem;cursor:pointer;letter-spacing:1px;transition:.25s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem}
-.btn-ghost:hover{background:var(--g3);border-color:var(--g)}
+.btn-ghost:hover{background:var(--g3);border-color:var(--g);box-shadow:0 0 22px rgba(0,255,65,.14)}
 
-.hero-meta{display:flex;gap:2.5rem}
+.hero-meta{display:flex;gap:2.8rem}
 .meta-item{display:flex;flex-direction:column;gap:.2rem}
-.meta-val{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;color:var(--g)}
-.meta-lbl{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:2px}
+.meta-val{font-family:'Orbitron',sans-serif;font-size:1.45rem;font-weight:900;color:var(--g);text-shadow:0 0 22px rgba(0,255,65,.5)}
+.meta-lbl{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--dim);letter-spacing:2px}
 
-/* TERMINAL */
-.terminal{background:#040e04;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:0 0 80px rgba(0,255,65,.08),0 40px 80px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.4)}
-.t-bar{background:rgba(0,255,65,.06);border-bottom:1px solid var(--border);padding:.65rem 1rem;display:flex;align-items:center;gap:.4rem}
+/* ── TERMINAL ── */
+.terminal{background:#020c02;border:1px solid rgba(0,255,65,.28);border-radius:6px;overflow:hidden;box-shadow:0 0 110px rgba(0,255,65,.09),0 40px 80px rgba(0,0,0,.75),inset 0 0 50px rgba(0,0,0,.45)}
+.t-bar{background:rgba(0,255,65,.06);border-bottom:1px solid rgba(0,255,65,.22);padding:.65rem 1rem;display:flex;align-items:center;gap:.4rem}
 .dot{width:10px;height:10px;border-radius:50%}
-.dr{background:#ff453a}.dy{background:#ffbd2e}.dg{background:var(--g);box-shadow:0 0 5px rgba(0,255,65,.7)}
-.t-title{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--dim);margin-left:.6rem;letter-spacing:1px}
-.t-body{padding:1.4rem 1.6rem;font-family:'Share Tech Mono',monospace;font-size:.75rem;line-height:2;min-height:360px}
+.dr{background:#ff453a}.dy{background:#ffbd2e}.dg{background:var(--g);box-shadow:0 0 8px rgba(0,255,65,.9)}
+.t-title{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--dim);margin-left:.6rem;letter-spacing:1px}
+.t-body{padding:1.5rem 1.7rem;font-family:'Share Tech Mono',monospace;font-size:.74rem;line-height:2.1;min-height:380px}
 .tl{display:block;opacity:0;animation:fadein .3s forwards}
 @keyframes fadein{to{opacity:1}}
-.tp{color:var(--amber)}.tc{color:var(--g)}.to{color:var(--dim)}.ts{color:#44ffaa}.te{color:var(--red)}.tcy{color:var(--cyan)}.tw{color:#fff}
-.cursor{display:inline-block;width:8px;height:1em;background:var(--g);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+.tp{color:var(--amber);text-shadow:0 0 6px rgba(255,208,0,.35)}
+.tc{color:var(--g);text-shadow:0 0 5px rgba(0,255,65,.35)}
+.to{color:var(--dim)}
+.ts{color:#55ffbb;text-shadow:0 0 5px rgba(85,255,187,.3)}
+.te{color:var(--red);text-shadow:0 0 7px rgba(255,26,51,.5)}
+.tcy{color:var(--cyan);text-shadow:0 0 6px rgba(0,238,255,.4)}
+.tw{color:#fff}
+.cursor{display:inline-block;width:8px;height:1em;background:var(--g);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px;box-shadow:0 0 6px var(--g)}
 @keyframes blink{50%{opacity:0}}
 
-/* TICKER */
-.ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(0,255,65,.03);padding:.7rem 0;overflow:hidden;position:relative;z-index:2}
-.ticker-inner{display:flex;gap:4rem;animation:tick 25s linear infinite;white-space:nowrap}
+/* ── TICKER ── */
+.ticker{border-top:1px solid rgba(0,255,65,.18);border-bottom:1px solid rgba(0,255,65,.18);background:rgba(0,255,65,.035);padding:.72rem 0;overflow:hidden;position:relative;z-index:2}
+.ticker-inner{display:flex;gap:4rem;animation:tick 28s linear infinite;white-space:nowrap}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tick-item{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:2px;display:flex;align-items:center;gap:.6rem}
-.tick-item::before{content:'//';color:var(--g)}
+.tick-item{font-family:'Share Tech Mono',monospace;font-size:.64rem;color:rgba(220,255,215,.5);letter-spacing:2px;display:flex;align-items:center;gap:.6rem}
+.tick-item::before{content:'//';color:var(--g);text-shadow:0 0 5px var(--g)}
 
-/* SECTION */
+/* ── SECTIONS ── */
 .section{padding:7rem 0;position:relative;z-index:2}
-.wrap{max-width:1140px;margin:0 auto;padding:0 2rem}
-.sec-eye{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--amber);letter-spacing:4px;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
-.sec-eye::before{content:'';width:24px;height:1px;background:var(--amber)}
-h2{font-family:'Orbitron',sans-serif;font-size:clamp(1.7rem,3vw,2.6rem);font-weight:700;color:#fff;line-height:1.15;margin-bottom:1rem}
-h2 .g{color:var(--g)}
-h2 .cy{color:var(--cyan)}
-.sec-sub{font-size:1rem;color:var(--dim);font-weight:300;max-width:560px;line-height:1.7;margin-bottom:3.5rem}
+.wrap{max-width:1160px;margin:0 auto;padding:0 2.5rem}
+.sec-label{font-family:'Share Tech Mono',monospace;font-size:.64rem;color:var(--amber);letter-spacing:4px;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;text-shadow:0 0 8px rgba(255,208,0,.38)}
+.sec-label::before{content:'';width:26px;height:1px;background:var(--amber);box-shadow:0 0 6px var(--amber)}
+h2{font-family:'Orbitron',sans-serif;font-size:clamp(1.7rem,3vw,2.65rem);font-weight:700;color:#fff;line-height:1.15;margin-bottom:.9rem}
+h2 .g{color:var(--g);text-shadow:0 0 32px rgba(0,255,65,.38)}
+h2 .cy{color:var(--cyan);text-shadow:0 0 32px rgba(0,238,255,.38)}
+h2 .re{color:var(--red);text-shadow:0 0 32px rgba(255,26,51,.38)}
+.sec-desc{font-size:1.05rem;color:rgba(220,255,215,.65);font-weight:400;max-width:580px;line-height:1.78;margin-bottom:3.5rem}
 
-/* MODULES */
-.mod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
-.mod{background:var(--panel);border:1px solid var(--border);padding:2.2rem;position:relative;overflow:hidden;transition:all .3s;cursor:default}
+/* ── MODULES ── */
+.mod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6rem}
+.mod{background:var(--panel);border:1px solid var(--border);padding:2.3rem;position:relative;overflow:hidden;transition:all .3s;cursor:default}
 .mod::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);transform:scaleX(0);transform-origin:left;transition:.35s}
-.mod:hover{border-color:var(--borderb);background:rgba(0,255,65,.07);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(0,255,65,.05)}
+.mod:hover{border-color:var(--borderb);background:rgba(0,255,65,.09);transform:translateY(-5px);box-shadow:0 28px 75px rgba(0,0,0,.5),0 0 55px rgba(0,255,65,.07)}
 .mod:hover::after{transform:scaleX(1)}
-.mod-n{font-family:'Orbitron',sans-serif;font-size:4rem;font-weight:900;color:rgba(0,255,65,.07);position:absolute;top:.5rem;right:1.2rem;line-height:1;pointer-events:none;transition:.3s}
-.mod:hover .mod-n{color:rgba(0,255,65,.12)}
-.mod-tag{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:.25rem .8rem;border:1px solid;display:inline-block;margin-bottom:1.2rem}
-.tag-g{color:var(--g);border-color:rgba(0,255,65,.3);background:rgba(0,255,65,.05)}
-.tag-cy{color:var(--cyan);border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.05)}
-.tag-am{color:var(--amber);border-color:rgba(255,170,0,.3);background:rgba(255,170,0,.05)}
-.tag-re{color:var(--red);border-color:rgba(255,51,68,.3);background:rgba(255,51,68,.05)}
-.mod-title{font-family:'Orbitron',sans-serif;font-size:.92rem;font-weight:700;color:#fff;margin-bottom:.8rem;text-transform:uppercase;letter-spacing:1px}
-.mod-desc{font-size:.9rem;color:var(--dim);line-height:1.6;margin-bottom:1.2rem;font-weight:300}
+.mod-num{font-family:'Orbitron',sans-serif;font-size:4.2rem;font-weight:900;color:rgba(0,255,65,.07);position:absolute;top:.4rem;right:1.2rem;line-height:1;pointer-events:none;transition:.3s}
+.mod:hover .mod-num{color:rgba(0,255,65,.14)}
+.mod-badge{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:2px;padding:.28rem .9rem;border:1px solid;display:inline-block;margin-bottom:1.3rem}
+.badge-g{color:var(--g);border-color:rgba(0,255,65,.38);background:rgba(0,255,65,.07);text-shadow:0 0 6px rgba(0,255,65,.38)}
+.badge-cy{color:var(--cyan);border-color:rgba(0,238,255,.38);background:rgba(0,238,255,.07);text-shadow:0 0 6px rgba(0,238,255,.38)}
+.badge-am{color:var(--amber);border-color:rgba(255,208,0,.38);background:rgba(255,208,0,.07);text-shadow:0 0 6px rgba(255,208,0,.38)}
+.badge-re{color:var(--red);border-color:rgba(255,26,51,.38);background:rgba(255,26,51,.07);text-shadow:0 0 6px rgba(255,26,51,.38)}
+.mod-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.8rem;text-transform:uppercase;letter-spacing:1px}
+.mod-desc{font-size:.98rem;color:rgba(212,255,208,.68);line-height:1.7;margin-bottom:1.3rem;font-weight:400}
 .mod-list{list-style:none}
-.mod-list li{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--dim);padding:.25rem 0;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(0,255,65,.05);transition:.2s}
+.mod-list li{font-family:'Share Tech Mono',monospace;font-size:.81rem;color:rgba(200,255,195,.8);padding:.32rem 0;display:flex;align-items:center;gap:.55rem;border-bottom:1px solid rgba(0,255,65,.07);transition:.2s;letter-spacing:.3px}
 .mod-list li:last-child{border-bottom:none}
-.mod-list li::before{content:'▸';color:var(--g);font-size:.7rem;flex-shrink:0}
-.mod:hover .mod-list li{color:rgba(212,245,208,.65)}
+.mod-list li::before{content:'▸';color:var(--g);font-size:.74rem;flex-shrink:0;text-shadow:0 0 6px var(--g)}
+.mod:hover .mod-list li{color:rgba(220,255,215,.9)}
 
-/* OSINT CARD - FULL WIDTH */
-.mod-osint{grid-column:1/-1;background:rgba(0,240,255,.03);border:1px solid rgba(0,240,255,.2);padding:2.5rem}
+/* OSINT CARD */
+.mod-osint{grid-column:1/-1;background:rgba(0,238,255,.04);border:1px solid rgba(0,238,255,.25);padding:2.6rem;box-shadow:0 0 70px rgba(0,238,255,.04)}
 .mod-osint::after{background:linear-gradient(90deg,var(--cyan),transparent)}
-.mod-osint:hover{border-color:rgba(0,240,255,.5);background:rgba(0,240,255,.06)}
-.osint-inner{display:grid;grid-template-columns:1fr 2fr;gap:3rem;align-items:start}
-.osint-left .mod-n{position:static;font-size:5rem;color:rgba(0,240,255,.1);line-height:1;margin-bottom:1rem}
-.osint-topics{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-.osint-group{}
-.og-title{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--cyan);letter-spacing:3px;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid rgba(0,240,255,.2)}
+.mod-osint:hover{border-color:rgba(0,238,255,.55);background:rgba(0,238,255,.08)}
+.osint-inner{display:grid;grid-template-columns:1fr 2fr;gap:3.5rem;align-items:start}
+.osint-star{font-size:5rem;color:rgba(0,238,255,.13);line-height:1;margin-bottom:1.2rem}
+.osint-topics{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.og-title{font-family:'Share Tech Mono',monospace;font-size:.73rem;color:var(--cyan);letter-spacing:3px;margin-bottom:.9rem;padding-bottom:.45rem;border-bottom:1px solid rgba(0,238,255,.28);text-shadow:0 0 10px rgba(0,238,255,.45)}
 
-/* TOOLS */
-.tools-section{background:rgba(0,255,65,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 0}
-.tools-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-top:3rem}
-.tool-card{background:var(--panel);border:1px solid var(--border);padding:1.5rem 1rem;text-align:center;transition:.3s;cursor:default}
-.tool-card:hover{border-color:var(--borderb);background:rgba(0,255,65,.08);transform:translateY(-3px)}
-.tool-icon{font-size:1.6rem;display:block;margin-bottom:.6rem}
-.tool-name{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--g);letter-spacing:1px}
-.tool-cat{font-size:.6rem;color:var(--dim);margin-top:.2rem;font-family:'Share Tech Mono',monospace}
+/* ── CAPABILITIES ── */
+.cap-section{background:linear-gradient(180deg,rgba(0,255,65,.018) 0%,rgba(0,4,0,.98) 30%,rgba(0,238,255,.015) 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:6rem 0;position:relative;z-index:2}
+.cap-intro{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-bottom:4rem}
+.cap-intro-text h2{margin-bottom:.8rem}
+.cap-intro-stat{display:flex;flex-direction:column;gap:1.8rem}
+.cap-stat-item{display:flex;align-items:center;gap:1.5rem;padding:1.2rem 1.5rem;background:rgba(0,0,0,.4);border:1px solid rgba(0,255,65,.14);position:relative;overflow:hidden;transition:.3s}
+.cap-stat-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.cap-stat-item:hover{border-color:rgba(0,255,65,.35);transform:translateX(4px)}
+.csi-g::before{background:var(--g);box-shadow:0 0 8px var(--g)}
+.csi-cy::before{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.csi-am::before{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.csi-re::before{background:var(--red);box-shadow:0 0 8px var(--red)}
+.cap-stat-n{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;min-width:70px;line-height:1}
+.csi-g .cap-stat-n{color:var(--g);text-shadow:0 0 20px rgba(0,255,65,.5)}
+.csi-cy .cap-stat-n{color:var(--cyan);text-shadow:0 0 20px rgba(0,238,255,.5)}
+.csi-am .cap-stat-n{color:var(--amber);text-shadow:0 0 20px rgba(255,208,0,.5)}
+.csi-re .cap-stat-n{color:var(--red);text-shadow:0 0 20px rgba(255,26,51,.5)}
+.cap-stat-info{}
+.cap-stat-title{font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;color:#fff;letter-spacing:.5px;margin-bottom:.25rem}
+.cap-stat-sub{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:1px}
 
-/* INSTRUCTOR */
-.instructor{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
-.inst-visual{position:relative}
-.inst-frame{background:var(--panel);border:1px solid var(--border);padding:2.5rem;position:relative}
-.inst-frame::before{content:'';position:absolute;top:-1px;left:2rem;right:2rem;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
-.inst-avatar{width:100px;height:100px;border-radius:4px;background:linear-gradient(135deg,rgba(0,255,65,.15),rgba(0,240,255,.05));border:1px solid var(--borderb);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:var(--g);margin-bottom:1.5rem}
-.inst-name{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:.3rem}
-.inst-role{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--g);letter-spacing:2px;margin-bottom:1.5rem}
-.inst-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.5rem}
-.ist{text-align:center}
-.ist-n{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:var(--g)}
-.ist-l{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--dim);letter-spacing:1px;margin-top:.2rem}
-.inst-bio{font-size:.95rem;color:var(--dim);line-height:1.8;font-weight:300}
-.inst-badges{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
-.ibadge{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--amber);border:1px solid rgba(255,170,0,.3);background:rgba(255,170,0,.05);padding:.25rem .8rem;letter-spacing:1px}
+.cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+.cap-card{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.07);padding:2rem 1.6rem;position:relative;overflow:hidden;transition:all .3s;cursor:default}
+.cap-card::before{content:'';position:absolute;inset:0;opacity:0;transition:.3s}
+.cap-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;transform:scaleX(0);transform-origin:left;transition:.35s}
+.cap-card:hover::before{opacity:1}
+.cap-card:hover::after{transform:scaleX(1)}
+.cap-card:hover{transform:translateY(-4px)}
 
-/* CTA SECTION */
-.cta-wrap{position:relative;overflow:hidden;background:var(--bg2);border:1px solid var(--border);padding:5rem 4rem;text-align:center}
+.cc-g::before{background:linear-gradient(160deg,rgba(0,255,65,.08),transparent)}
+.cc-g::after{background:linear-gradient(90deg,var(--g),transparent)}
+.cc-g:hover{border-color:rgba(0,255,65,.4);box-shadow:0 16px 50px rgba(0,0,0,.5),0 0 30px rgba(0,255,65,.08)}
+.cc-cy::before{background:linear-gradient(160deg,rgba(0,238,255,.08),transparent)}
+.cc-cy::after{background:linear-gradient(90deg,var(--cyan),transparent)}
+.cc-cy:hover{border-color:rgba(0,238,255,.4);box-shadow:0 16px 50px rgba(0,0,0,.5),0 0 30px rgba(0,238,255,.08)}
+.cc-am::before{background:linear-gradient(160deg,rgba(255,208,0,.08),transparent)}
+.cc-am::after{background:linear-gradient(90deg,var(--amber),transparent)}
+.cc-am:hover{border-color:rgba(255,208,0,.4);box-shadow:0 16px 50px rgba(0,0,0,.5),0 0 30px rgba(255,208,0,.08)}
+.cc-re::before{background:linear-gradient(160deg,rgba(255,26,51,.08),transparent)}
+.cc-re::after{background:linear-gradient(90deg,var(--red),transparent)}
+.cc-re:hover{border-color:rgba(255,26,51,.4);box-shadow:0 16px 50px rgba(0,0,0,.5),0 0 30px rgba(255,26,51,.08)}
+
+.cap-icon{font-size:2.2rem;display:block;margin-bottom:1.2rem;position:relative;z-index:1;transition:.3s}
+.cap-card:hover .cap-icon{transform:scale(1.1)}
+.cap-name{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:.5rem;display:block;position:relative;z-index:1;letter-spacing:.5px}
+.cc-g .cap-name{color:var(--g);text-shadow:0 0 10px rgba(0,255,65,.4)}
+.cc-cy .cap-name{color:var(--cyan);text-shadow:0 0 10px rgba(0,238,255,.4)}
+.cc-am .cap-name{color:var(--amber);text-shadow:0 0 10px rgba(255,208,0,.4)}
+.cc-re .cap-name{color:var(--red);text-shadow:0 0 10px rgba(255,26,51,.4)}
+.cap-text{font-family:'Share Tech Mono',monospace;font-size:.64rem;color:rgba(200,230,200,.55);line-height:1.7;position:relative;z-index:1;transition:.2s;letter-spacing:.2px}
+.cap-card:hover .cap-text{color:rgba(220,255,215,.78)}
+
+/* ── CTA ── */
+.cta-wrap{position:relative;overflow:hidden;background:var(--bg2);border:1px solid rgba(0,255,65,.28);padding:5.5rem 4rem;text-align:center}
 .cta-wrap::before{content:'ACCESS_GRANTED';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',sans-serif;font-size:min(10vw,7rem);font-weight:900;color:rgba(0,255,65,.025);white-space:nowrap;pointer-events:none;letter-spacing:10px}
 .cta-wrap::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),var(--cyan),var(--g),transparent)}
-.price-box{display:inline-flex;flex-direction:column;align-items:center;background:rgba(0,255,65,.05);border:1px solid var(--borderb);padding:2rem 4rem;margin:2.5rem 0;position:relative}
-.price-box::before,.price-box::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--g);border-style:solid}
+.price-box{display:inline-flex;flex-direction:column;align-items:center;background:rgba(0,255,65,.07);border:1px solid var(--borderb);padding:2.2rem 4.5rem;margin:2.8rem 0;position:relative;box-shadow:0 0 60px rgba(0,255,65,.1)}
+.price-box::before,.price-box::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--g);border-style:solid}
 .price-box::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
 .price-box::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
-.price-from{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:3px;margin-bottom:.5rem}
-.price-val{font-family:'Orbitron',sans-serif;font-size:3.2rem;font-weight:900;color:var(--g);text-shadow:0 0 40px rgba(0,255,65,.4);line-height:1}
-.price-sub{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:2px;margin-top:.5rem}
-.guarantee{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:1.5rem}
+.price-label{font-family:'Share Tech Mono',monospace;font-size:.64rem;color:var(--dim);letter-spacing:3px;margin-bottom:.6rem}
+.price-val{font-family:'Orbitron',sans-serif;font-size:3.4rem;font-weight:900;color:var(--g);text-shadow:0 0 55px rgba(0,255,65,.6);line-height:1}
+.price-note{font-family:'Share Tech Mono',monospace;font-size:.63rem;color:var(--dim);letter-spacing:2px;margin-top:.55rem}
+.guarantee{display:flex;align-items:center;justify-content:center;gap:.65rem;margin-top:1.6rem}
 .guar-icon{font-size:1.2rem}
-.guar-text{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);letter-spacing:2px}
+.guar-text{font-family:'Share Tech Mono',monospace;font-size:.64rem;color:var(--dim);letter-spacing:2px}
 
-/* FOOTER */
+/* ── FOOTER ── */
 footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-index:2}
-.foot-inner{max-width:1140px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
-.foot-logo{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:900;color:var(--g)}
+.foot-inner{max-width:1160px;margin:0 auto;padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between}
+.foot-logo{font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:900;color:var(--g);text-shadow:0 0 14px rgba(0,255,65,.5)}
 .foot-copy{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--dim);letter-spacing:2px}
 
-/* GLITCH */
+/* ── GLITCH ── */
 @keyframes glitch{
-  0%,88%,100%{clip-path:none;transform:none;text-shadow:0 0 40px rgba(0,255,65,.35)}
-  90%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(-4px);text-shadow:-4px 0 rgba(255,51,68,.6),4px 0 rgba(0,240,255,.6)}
+  0%,88%,100%{clip-path:none;transform:none;text-shadow:0 0 70px rgba(0,255,65,.5),0 0 140px rgba(0,255,65,.18)}
+  90%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(-4px);text-shadow:-4px 0 rgba(255,26,51,.7),4px 0 rgba(0,238,255,.7)}
   92%{clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translateX(4px)}
   94%{clip-path:none;transform:none}
 }
 .glitch{animation:glitch 7s infinite}
 
-/* SCROLL LINE */
 @keyframes scan{0%{top:-2%}100%{top:102%}}
-.hero::before{content:'';position:absolute;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,65,.2),transparent);animation:scan 8s linear infinite;z-index:1}
+.hero::before{content:'';position:absolute;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,65,.28),transparent);animation:scan 9s linear infinite;z-index:1}
 
-@media(max-width:900px){
-  .hero-wrap,.instructor{grid-template-columns:1fr;gap:3rem}
+@media(max-width:920px){
+  .hero-wrap{grid-template-columns:1fr;gap:3rem}
+  .hero-wrap>div:last-child{display:none}
   .mod-grid{grid-template-columns:1fr}
   .mod-osint .osint-inner{grid-template-columns:1fr}
   .osint-topics{grid-template-columns:1fr 1fr}
-  .tools-grid{grid-template-columns:repeat(3,1fr)}
+  .cap-intro{grid-template-columns:1fr}
+  .cap-grid{grid-template-columns:repeat(2,1fr)}
   .foot-inner{flex-direction:column;gap:1rem;text-align:center}
-  .hero-wrap > div:last-child{display:none}
   .nav-links{display:none}
+  .cta-wrap{padding:3.5rem 2rem}
 }
 </style>
 </head>
 <body>
-
 <canvas id="fx"></canvas>
 
 <!-- NAV -->
@@ -213,7 +267,7 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
     <div class="nav-links">
       <a href="#modulos">Módulos</a>
       <a href="#osint">OSINT</a>
-      <a href="#ferramentas">Ferramentas</a>
+      <a href="#capacidades">Capacidades</a>
       <a href="#inscricao">Inscrever</a>
     </div>
     <button class="btn-nav" onclick="document.getElementById('inscricao').scrollIntoView({behavior:'smooth'})">▶ GARANTIR VAGA</button>
@@ -237,8 +291,23 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
       </h1>
 
       <p class="hero-desc">
-        <strong>4 aulas intensivas</strong> que te levam do zero ao conhecimento real de segurança digital. Ferramentas usadas por profissionais, laboratórios práticos e um módulo exclusivo de <strong>OSINT</strong>.
+        <strong>4 aulas</strong> que te levam do zero ao conhecimento real de segurança digital em <strong>8 horas</strong> de conteúdo direto ao ponto.
       </p>
+
+      <div class="hero-callout">
+        <span class="callout-tag">// O QUE VOCÊ VAI DOMINAR</span>
+        <div class="callout-body">
+          Trabalhe com o mesmo <span class="hl-g">arsenal profissional</span> do mercado,
+          em <span class="hl-cy">laboratórios práticos reais</span> e com um módulo
+          exclusivo de <span class="hl-g">inteligência em fontes abertas</span>.
+        </div>
+        <div class="callout-chips">
+          <span class="chip chip-g">⚙ 100% PRÁTICO</span>
+          <span class="chip chip-cy">🔍 OSINT EXCLUSIVO</span>
+          <span class="chip chip-am">🛡 DEFESA &amp; ATAQUE</span>
+          <span class="chip chip-re">💻 LABORATÓRIOS REAIS</span>
+        </div>
+      </div>
 
       <div class="hero-cta">
         <a href="#inscricao" class="btn-primary" onclick="document.getElementById('inscricao').scrollIntoView({behavior:'smooth'});return false">
@@ -251,12 +320,12 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
 
       <div class="hero-meta">
         <div class="meta-item">
-          <span class="meta-val">5</span>
-          <span class="meta-lbl">MÓDULOS</span>
+          <span class="meta-val">4</span>
+          <span class="meta-lbl">AULAS</span>
         </div>
         <div class="meta-item">
-          <span class="meta-val">100%</span>
-          <span class="meta-lbl">PRÁTICO</span>
+          <span class="meta-val">8h</span>
+          <span class="meta-lbl">CONTEÚDO</span>
         </div>
         <div class="meta-item">
           <span class="meta-val">1×</span>
@@ -265,7 +334,6 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
       </div>
     </div>
 
-    <!-- TERMINAL -->
     <div class="terminal">
       <div class="t-bar">
         <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
@@ -284,60 +352,60 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
 <!-- MÓDULOS -->
 <section class="section" id="modulos">
   <div class="wrap">
-    <div class="sec-eye">CURRICULUM.load()</div>
+    <div class="sec-label">CURRICULUM.load()</div>
     <h2>CONTEÚDO <span class="g">COMPLETO</span> DO CURSO</h2>
-    <p class="sec-sub">Cada módulo foi desenhado para te dar habilidades reais, não teoria vazia. Do fundamento ao ataque e defesa.</p>
+    <p class="sec-desc">Cada módulo foi desenhado para desenvolver habilidades reais, não teoria vazia. Do fundamento ao ataque e à defesa.</p>
 
     <div class="mod-grid">
 
       <div class="mod">
-        <span class="mod-n">01</span>
-        <span class="mod-tag tag-g">MÓDULO 01 // FUNDAMENTOS</span>
+        <span class="mod-num">01</span>
+        <span class="mod-badge badge-g">MÓDULO 01 // FUNDAMENTOS</span>
         <div class="mod-title">O Mundo da Cybersegurança</div>
-        <p class="mod-desc">Entenda o ecossistema e descubra onde você pode atuar nesse mercado em expansão.</p>
+        <p class="mod-desc">Entenda o ecossistema e descubra onde você pode atuar nesse mercado em expansão acelerada.</p>
         <ul class="mod-list">
           <li>Fundamentos e CIA Triad</li>
-          <li>Áreas: Red, Blue, Purple Team</li>
-          <li>Oportunidades e salários</li>
+          <li>Áreas: Red, Blue e Purple Team</li>
+          <li>Oportunidades e salários do setor</li>
           <li>Roteiro de carreira profissional</li>
         </ul>
       </div>
 
       <div class="mod">
-        <span class="mod-n">02</span>
-        <span class="mod-tag tag-re">MÓDULO 02 // ATAQUES</span>
+        <span class="mod-num">02</span>
+        <span class="mod-badge badge-re">MÓDULO 02 // ATAQUES</span>
         <div class="mod-title">Como os Ataques Acontecem</div>
-        <p class="mod-desc">Pense como um atacante. Entenda cada fase de um ataque real do começo ao fim.</p>
+        <p class="mod-desc">Pense como um atacante. Entenda cada fase de um ataque real do início ao comprometimento.</p>
         <ul class="mod-list">
-          <li>Kill Chain e MITRE ATT&CK</li>
+          <li>Kill Chain e framework de ameaças</li>
           <li>Engenharia social e phishing</li>
-          <li>Malware, ransomware na prática</li>
-          <li>Case real: anatomia de um breach</li>
+          <li>Malware e ransomware na prática</li>
+          <li>Anatomia real de um breach</li>
         </ul>
       </div>
 
       <div class="mod">
-        <span class="mod-n">03</span>
-        <span class="mod-tag tag-am">MÓDULO 03 // FERRAMENTAS</span>
-        <div class="mod-title">Ferramentas da Cybersegurança</div>
-        <p class="mod-desc">Mãos na massa com o arsenal usado por pentesters e analistas ao redor do mundo.</p>
+        <span class="mod-num">03</span>
+        <span class="mod-badge badge-am">MÓDULO 03 // LABORATÓRIO</span>
+        <div class="mod-title">Prática com Arsenal Profissional</div>
+        <p class="mod-desc">Mãos na massa com o arsenal usado por pentesters e analistas de segurança ao redor do mundo.</p>
         <ul class="mod-list">
-          <li>Nmap, Nessus e Nikto</li>
-          <li>Burp Suite para web hacking</li>
-          <li>Metasploit Framework</li>
-          <li>Wireshark e análise de tráfego</li>
+          <li>Varredura e mapeamento de rede</li>
+          <li>Análise de vulnerabilidades web</li>
+          <li>Exploração controlada em lab</li>
+          <li>Captura e análise de tráfego</li>
         </ul>
       </div>
 
       <div class="mod">
-        <span class="mod-n">04</span>
-        <span class="mod-tag tag-g">MÓDULO 04 // DEFESA</span>
+        <span class="mod-num">04</span>
+        <span class="mod-badge badge-g">MÓDULO 04 // DEFESA</span>
         <div class="mod-title">Defesa, Ética e Projeto Final</div>
-        <p class="mod-desc">Boas práticas, responsabilidade profissional e simulação completa de incidente.</p>
+        <p class="mod-desc">Boas práticas, responsabilidade profissional e simulação completa de resposta a incidente.</p>
         <ul class="mod-list">
-          <li>Hardening de sistemas</li>
-          <li>Ética hacker e legislação BR</li>
-          <li>Incident Response na prática</li>
+          <li>Hardening e endurecimento de sistemas</li>
+          <li>Ética hacker e legislação brasileira</li>
+          <li>Resposta a incidentes na prática</li>
           <li>Certificado de participação</li>
         </ul>
       </div>
@@ -345,38 +413,38 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
       <!-- OSINT FULL WIDTH -->
       <div class="mod mod-osint" id="osint">
         <div class="osint-inner">
-          <div class="osint-left">
-            <div class="mod-n" style="position:static;font-size:5rem;color:rgba(0,240,255,.12);line-height:1;margin-bottom:1.2rem">★</div>
-            <span class="mod-tag tag-cy">MÓDULO BÔNUS // EXCLUSIVO</span>
-            <div class="mod-title" style="color:var(--cyan);font-size:1.1rem;margin-top:.5rem">OSINT<br>Inteligência em<br>Fontes Abertas</div>
-            <p class="mod-desc" style="margin-top:1rem;margin-bottom:0">O módulo mais poderoso do curso. Aprenda a encontrar qualquer informação que esteja publicamente exposta — como fazem os melhores investigadores e hunters do mundo.</p>
+          <div>
+            <div class="osint-star">★</div>
+            <span class="mod-badge badge-cy">MÓDULO BÔNUS // EXCLUSIVO</span>
+            <div class="mod-title" style="color:var(--cyan);font-size:1.1rem;margin-top:.6rem;text-shadow:0 0 22px rgba(0,238,255,.38)">OSINT<br>Inteligência em<br>Fontes Abertas</div>
+            <p class="mod-desc" style="margin-top:1rem;margin-bottom:0;color:rgba(200,245,240,.62)">O módulo mais poderoso do curso. Aprenda a coletar e correlacionar informações públicas como os melhores investigadores e analistas de ameaças do mundo.</p>
           </div>
           <div>
             <div class="osint-topics">
-              <div class="osint-group">
+              <div>
                 <div class="og-title">RECONHECIMENTO</div>
                 <ul class="mod-list">
-                  <li>Google Dorks avançados</li>
-                  <li>Shodan & Censys</li>
-                  <li>WHOIS e registros DNS</li>
-                  <li>Metadados de arquivos</li>
+                  <li>Pesquisa avançada em buscadores</li>
+                  <li>Varredura de superfície de ataque</li>
+                  <li>Registros e infraestrutura DNS</li>
+                  <li>Metadados de documentos</li>
                 </ul>
               </div>
-              <div class="osint-group">
-                <div class="og-title">FERRAMENTAS</div>
+              <div>
+                <div class="og-title">INTELIGÊNCIA</div>
                 <ul class="mod-list">
-                  <li>theHarvester</li>
-                  <li>Maltego & SpiderFoot</li>
-                  <li>OSINT Framework</li>
-                  <li>Recon-ng na prática</li>
+                  <li>Coleta automatizada de dados</li>
+                  <li>Mapeamento de relações e grafos</li>
+                  <li>Frameworks de recon modular</li>
+                  <li>Correlação de identidades</li>
                 </ul>
               </div>
-              <div class="osint-group">
+              <div>
                 <div class="og-title">INVESTIGAÇÃO</div>
                 <ul class="mod-list">
-                  <li>Redes sociais & SOCMINT</li>
-                  <li>Geolocalização de imagens</li>
-                  <li>Busca em dark web</li>
+                  <li>Redes sociais e SOCMINT</li>
+                  <li>Geolocalização por imagens</li>
+                  <li>Busca em fontes profundas</li>
                   <li>Case real completo</li>
                 </ul>
               </div>
@@ -389,24 +457,81 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
   </div>
 </section>
 
-<!-- TOOLS -->
-<div class="tools-section" id="ferramentas">
+<!-- CAPACIDADES -->
+<div class="cap-section" id="capacidades">
   <div class="wrap">
-    <div class="sec-eye">ARSENAL.init()</div>
-    <h2>FERRAMENTAS <span class="g">REAIS</span> QUE VOCÊ VAI USAR</h2>
-    <div class="tools-grid">
-      <div class="tool-card"><span class="tool-icon">🗺️</span><div class="tool-name">Nmap</div><div class="tool-cat">Port Scanner</div></div>
-      <div class="tool-card"><span class="tool-icon">🦈</span><div class="tool-name">Wireshark</div><div class="tool-cat">Packet Analysis</div></div>
-      <div class="tool-card"><span class="tool-icon">💣</span><div class="tool-name">Metasploit</div><div class="tool-cat">Exploitation</div></div>
-      <div class="tool-card"><span class="tool-icon">🕷️</span><div class="tool-name">Burp Suite</div><div class="tool-cat">Web Hacking</div></div>
-      <div class="tool-card"><span class="tool-icon">🔍</span><div class="tool-name">Shodan</div><div class="tool-cat">OSINT / IoT</div></div>
-      <div class="tool-card"><span class="tool-icon">🌐</span><div class="tool-name">Maltego</div><div class="tool-cat">OSINT Graph</div></div>
-      <div class="tool-card"><span class="tool-icon">🔎</span><div class="tool-name">theHarvester</div><div class="tool-cat">Email Recon</div></div>
-      <div class="tool-card"><span class="tool-icon">🧪</span><div class="tool-name">Nessus</div><div class="tool-cat">Vuln Scanner</div></div>
-      <div class="tool-card"><span class="tool-icon">🐧</span><div class="tool-name">Kali Linux</div><div class="tool-cat">OS Pentest</div></div>
-      <div class="tool-card"><span class="tool-icon">🕸️</span><div class="tool-name">SpiderFoot</div><div class="tool-cat">OSINT Auto</div></div>
-      <div class="tool-card"><span class="tool-icon">🔗</span><div class="tool-name">Recon-ng</div><div class="tool-cat">OSINT Framework</div></div>
-      <div class="tool-card"><span class="tool-icon">📡</span><div class="tool-name">Aircrack-ng</div><div class="tool-cat">Wireless</div></div>
+    <div class="cap-intro">
+      <div class="cap-intro-text">
+        <div class="sec-label">HABILIDADES.map()</div>
+        <h2>O QUE VOCÊ VAI <span class="g">SABER FAZER</span> AO FINAL</h2>
+    <p class="sec-desc">Capacidades reais que você vai desenvolver em 8 horas — uma base sólida para quem está entrando no universo da segurança digital.</p>
+      </div>
+      <div class="cap-intro-stat">
+        <div class="cap-stat-item csi-g">
+          <div class="cap-stat-n">8h</div>
+          <div class="cap-stat-info">
+            <div class="cap-stat-title">HORAS DE CONTEÚDO</div>
+            <div class="cap-stat-sub">Teoria aplicada e laboratórios</div>
+          </div>
+        </div>
+        <div class="cap-stat-item csi-cy">
+          <div class="cap-stat-n">4</div>
+          <div class="cap-stat-info">
+            <div class="cap-stat-title">AULAS AO VIVO</div>
+            <div class="cap-stat-sub">Incluindo bônus exclusivo de OSINT</div>
+          </div>
+        </div>
+        <div class="cap-stat-item csi-am">
+          <div class="cap-stat-n">100%</div>
+          <div class="cap-stat-info">
+            <div class="cap-stat-title">LABORATÓRIO PRÁTICO</div>
+            <div class="cap-stat-sub">Hands-on desde a primeira aula</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cap-grid">
+      <div class="cap-card cc-g">
+        <span class="cap-icon">🔬</span>
+        <span class="cap-name">VARREDURA DE REDE</span>
+        <span class="cap-text">Identificar hosts ativos, portas abertas, serviços expostos e versões de software em qualquer ambiente.</span>
+      </div>
+      <div class="cap-card cc-re">
+        <span class="cap-icon">💥</span>
+        <span class="cap-name">EXPLORAÇÃO CONTROLADA</span>
+        <span class="cap-text">Executar e compreender ataques reais em laboratório isolado, entendendo cada etapa do comprometimento.</span>
+      </div>
+      <div class="cap-card cc-cy">
+        <span class="cap-icon">🕵️</span>
+        <span class="cap-name">INTELIGÊNCIA OSINT</span>
+        <span class="cap-text">Coletar, correlacionar e interpretar informações públicas como um investigador profissional de ameaças.</span>
+      </div>
+      <div class="cap-card cc-am">
+        <span class="cap-icon">🌐</span>
+        <span class="cap-name">ANÁLISE WEB</span>
+        <span class="cap-text">Interceptar, inspecionar e explorar vulnerabilidades em aplicações web — do recon à exploração.</span>
+      </div>
+      <div class="cap-card cc-g">
+        <span class="cap-icon">📡</span>
+        <span class="cap-name">ANÁLISE DE TRÁFEGO</span>
+        <span class="cap-text">Capturar e dissecar pacotes de rede para identificar comunicações suspeitas e extrair evidências.</span>
+      </div>
+      <div class="cap-card cc-re">
+        <span class="cap-icon">🛡️</span>
+        <span class="cap-name">RESPOSTA A INCIDENTES</span>
+        <span class="cap-text">Detectar, conter e investigar incidentes de segurança com metodologia profissional de IR.</span>
+      </div>
+      <div class="cap-card cc-cy">
+        <span class="cap-icon">🔐</span>
+        <span class="cap-name">HARDENING DE SISTEMAS</span>
+        <span class="cap-text">Reduzir a superfície de ataque de sistemas operacionais e serviços críticos com boas práticas reais.</span>
+      </div>
+      <div class="cap-card cc-am">
+        <span class="cap-icon">⚡</span>
+        <span class="cap-name">AUDITORIA WIRELESS</span>
+        <span class="cap-text">Avaliar a segurança de redes sem fio, identificar configurações inseguras e vetores de ataque.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -415,23 +540,23 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
 <section class="section" id="inscricao">
   <div class="wrap">
     <div class="cta-wrap">
-      <div class="sec-eye" style="justify-content:center">ACESSO_LIBERADO.exe</div>
+      <div class="sec-label" style="justify-content:center">ACESSO_LIBERADO.exe</div>
       <h2 style="text-align:center">TRANSFORME CURIOSIDADE<br>EM <span class="g">CONHECIMENTO REAL</span></h2>
-      <p style="font-size:1rem;color:var(--dim);font-weight:300;max-width:500px;margin:.8rem auto 0;line-height:1.7;text-align:center">Aprenda. Pratique. Proteja. Evolua.<br>Junte-se a quem está construindo o futuro da segurança digital.</p>
+      <p style="font-size:1.02rem;color:var(--dim);font-weight:400;max-width:500px;margin:.9rem auto 0;line-height:1.75;text-align:center">Aprenda. Pratique. Proteja. Evolua.<br>Junte-se a quem está construindo o futuro da segurança digital.</p>
 
       <div class="price-box">
-        <span class="price-from">ACESSO COMPLETO POR APENAS</span>
+        <span class="price-label">ACESSO COMPLETO POR APENAS</span>
         <span class="price-val">R$ 97,90</span>
-        <span class="price-sub">PAGAMENTO ÚNICO // 1× SEM JUROS</span>
+        <span class="price-note">PAGAMENTO ÚNICO // 1× SEM JUROS</span>
       </div>
 
-      <a href="#" class="btn-primary" style="font-size:.8rem;padding:1.3rem 4rem;margin-bottom:1.5rem">
+      <a href="#" class="btn-primary" style="font-size:.8rem;padding:1.35rem 4.5rem;margin-bottom:1.6rem">
         ⚡ GARANTIR MINHA VAGA AGORA
       </a>
 
       <div class="guarantee">
         <span class="guar-icon">🔒</span>
-        <span class="guar-text">PAGAMENTO SEGURO // ACESSO IMEDIATO // CERTIFICADO INCLUSO</span>
+        <span class="guar-text">PAGAMENTO SEGURO // CERTIFICADO INCLUSO</span>
       </div>
     </div>
   </div>
@@ -445,18 +570,18 @@ footer{padding:3rem 0;border-top:1px solid var(--border);position:relative;z-ind
 </footer>
 
 <script>
-// MATRIX CANVAS
+// MATRIX
 const cv=document.getElementById('fx'),cx=cv.getContext('2d');
 function resize(){cv.width=innerWidth;cv.height=innerHeight}
 resize();window.addEventListener('resize',resize);
-const chars='01アイウカキクサシスタチツABCDEFGHIJKLMNOPQRSTUVWXYZ<>/{}[]!@#$%';
+const chars='01アイウエオカキクケコサシスセソABCDEFGHIJKLMNOPQRSTUVWXYZ<>/{}[]|!@#';
 let cols=Math.floor(innerWidth/16),drops=Array(cols).fill(1);
 function matrix(){
-  cx.fillStyle='rgba(2,12,2,0.05)';cx.fillRect(0,0,cv.width,cv.height);
+  cx.fillStyle='rgba(1,8,1,0.05)';cx.fillRect(0,0,cv.width,cv.height);
   drops.forEach((y,i)=>{
     const c=chars[Math.floor(Math.random()*chars.length)];
-    cx.globalAlpha=Math.random()*.45+.2;
-    cx.fillStyle=Math.random()>.97?'#fff':Math.random()>.9?'#00ffaa':'#00ff41';
+    cx.globalAlpha=Math.random()*.5+.18;
+    cx.fillStyle=Math.random()>.97?'#ffffff':Math.random()>.9?'#00ffbb':'#00ff41';
     cx.font='13px Share Tech Mono,monospace';
     cx.fillText(c,i*16,y*16);
     cx.globalAlpha=1;
@@ -466,57 +591,53 @@ function matrix(){
 }
 setInterval(matrix,55);
 
-// TERMINAL TYPEWRITER
+// TERMINAL
 const lines=[
   {t:'p',v:'student@lab:~$ '},
-  {t:'c',v:'nmap -sV -O 192.168.1.1'},
-  {t:'o',v:'Starting Nmap 7.94...'},
-  {t:'s',v:'PORT     STATE  SERVICE   VERSION'},
-  {t:'s',v:'22/tcp   open   ssh       OpenSSH 8.9'},
-  {t:'s',v:'80/tcp   open   http      Apache 2.4.54'},
-  {t:'e',v:'3306/tcp open   mysql     MySQL 5.7.39 [VULN]'},
+  {t:'c',v:'./recon.sh --alvo 192.168.0.0/24'},
+  {t:'o',v:'[*] Iniciando varredura de rede...'},
+  {t:'s',v:'[+] 12 hosts ativos encontrados'},
+  {t:'s',v:'[+] Portas abertas: 22, 80, 443, 3306'},
+  {t:'e',v:'[!] Serviço crítico exposto na porta 3306'},
   {t:'o',v:''},
   {t:'p',v:'student@lab:~$ '},
-  {t:'c',v:'python3 osint_scan.py --target example.com'},
-  {t:'cy',v:'[OSINT] Enumerating subdomains...'},
-  {t:'s',v:'[+] Found: mail.example.com → 104.21.x.x'},
-  {t:'s',v:'[+] Found: admin.example.com → 172.67.x.x'},
-  {t:'cy',v:'[+] GitHub leak detected: API_KEY exposed'},
-  {t:'e',v:'[!] CRITICAL: credentials in public repo'},
+  {t:'c',v:'./osint.py --alvo empresa.com.br'},
+  {t:'cy',v:'[OSINT] Coletando dados públicos...'},
+  {t:'s',v:'[+] Subdomínios: 14 encontrados'},
+  {t:'s',v:'[+] E-mails corporativos: 38 coletados'},
+  {t:'cy',v:'[+] Vazamento detectado em repositório público'},
+  {t:'e',v:'[!] CRÍTICO: credenciais expostas — risco alto'},
   {t:'o',v:''},
   {t:'p',v:'student@lab:~$ '},
   {t:'c',v:''},
 ];
 const tb=document.getElementById('tb');
-let li=0,ci=0,typing=false;
+let li=0;
 function nextLine(){
   if(li>=lines.length)return;
   const l=lines[li];
   const span=document.createElement('span');
-  span.className=`tl t${l.t}`;
-  span.style.animationDelay='0s';
+  span.className=`tl t${l.t}`;span.style.animationDelay='0s';
   tb.appendChild(span);
   if(l.t==='p'||l.t==='c'){
-    typing=true;
     let idx=0;
     const iv=setInterval(()=>{
       if(idx<l.v.length){span.textContent=l.v.slice(0,++idx);tb.scrollTop=tb.scrollHeight;}
-      else{clearInterval(iv);typing=false;li++;setTimeout(nextLine,l.t==='c'?400:100);}
-    },l.t==='c'?55:20);
+      else{clearInterval(iv);li++;setTimeout(nextLine,l.t==='c'?420:90);}
+    },l.t==='c'?52:18);
   } else {
-    span.textContent=l.v;
-    tb.scrollTop=tb.scrollHeight;
-    li++;setTimeout(nextLine,250);
+    span.textContent=l.v;tb.scrollTop=tb.scrollHeight;
+    li++;setTimeout(nextLine,240);
   }
   if(li===lines.length){
     const cur=document.createElement('span');
     cur.className='cursor';tb.appendChild(cur);
   }
 }
-setTimeout(nextLine,800);
+setTimeout(nextLine,900);
 
 // TICKER
-const items=['CYBERSEGURANÇA','ETHICAL HACKING','OSINT','PENTEST','BUG BOUNTY','NETWORK SECURITY','WEB HACKING','MALWARE ANALYSIS','THREAT HUNTING','INCIDENT RESPONSE','CRYPTOGRAPHY','REVERSE ENGINEERING'];
+const items=['CYBERSEGURANÇA','ETHICAL HACKING','OSINT','PENTEST','BUG BOUNTY','SEGURANÇA DE REDES','WEB HACKING','ANÁLISE DE MALWARE','THREAT HUNTING','RESPOSTA A INCIDENTES','CRIPTOGRAFIA','ENGENHARIA REVERSA'];
 const tic=document.getElementById('tick');
 [...items,...items].forEach(t=>{
   const d=document.createElement('div');
