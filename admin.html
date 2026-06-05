@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Leads Cybersec</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#00ff41;--cy:#00eeff;--am:#ffd000;--re:#ff1a33;--bg:#010801;--panel:rgba(0,255,65,.05);--border:rgba(0,255,65,.2);--text:#edfce8;--dim:rgba(220,255,215,.6)}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px);pointer-events:none;z-index:0}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100}
+.login-box{background:rgba(0,0,0,.7);border:1px solid var(--border);padding:3rem;width:100%;max-width:360px;position:relative}
+.login-box::before{content:'';position:absolute;top:0;left:2rem;right:2rem;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.login-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--g);text-shadow:0 0 16px rgba(0,255,65,.5);margin-bottom:.4rem;letter-spacing:1px}
+.login-sub{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--dim);letter-spacing:2px;margin-bottom:2rem}
+.login-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--g);letter-spacing:2px;display:block;margin-bottom:.4rem}
+.login-input{width:100%;background:rgba(0,0,0,.6);border:1px solid rgba(0,255,65,.25);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.82rem;padding:.8rem 1rem;outline:none;transition:.2s;margin-bottom:1rem}
+.login-input:focus{border-color:var(--g);box-shadow:0 0 16px rgba(0,255,65,.1)}
+.login-btn{width:100%;font-family:'Orbitron',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;color:#010801;background:var(--g);border:none;padding:1rem;cursor:pointer;transition:.2s;margin-top:.5rem}
+.login-btn:hover{background:#55ff80;box-shadow:0 0 30px rgba(0,255,65,.5)}
+.login-err{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--re);text-align:center;margin-top:.8rem;letter-spacing:1px;display:none}
+
+/* LAYOUT */
+#appScreen{display:none;position:relative;z-index:1}
+header{background:rgba(1,8,1,.95);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(16px)}
+.hdr-logo{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:900;color:var(--g);text-shadow:0 0 12px rgba(0,255,65,.5);letter-spacing:1px}
+.hdr-right{display:flex;align-items:center;gap:1.5rem}
+.hdr-user{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--dim);letter-spacing:1px}
+.btn-logout{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--re);background:rgba(255,26,51,.08);border:1px solid rgba(255,26,51,.3);padding:.4rem .9rem;cursor:pointer;letter-spacing:1px;transition:.2s}
+.btn-logout:hover{background:rgba(255,26,51,.18)}
+
+main{max-width:1300px;margin:0 auto;padding:2rem 2rem 4rem}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2.5rem}
+.stat-card{background:var(--panel);border:1px solid var(--border);padding:1.5rem;position:relative;overflow:hidden;transition:.2s}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.sc-total::after{background:linear-gradient(90deg,var(--g),transparent)}
+.sc-pago::after{background:linear-gradient(90deg,var(--cy),transparent)}
+.sc-pend::after{background:linear-gradient(90deg,var(--am),transparent)}
+.sc-conv::after{background:linear-gradient(90deg,#c060ff,transparent)}
+.stat-label{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--dim);letter-spacing:2px;margin-bottom:.5rem}
+.stat-val{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900}
+.sc-total .stat-val{color:var(--g);text-shadow:0 0 20px rgba(0,255,65,.4)}
+.sc-pago  .stat-val{color:var(--cy);text-shadow:0 0 20px rgba(0,238,255,.4)}
+.sc-pend  .stat-val{color:var(--am);text-shadow:0 0 20px rgba(255,208,0,.4)}
+.sc-conv  .stat-val{color:#c060ff;text-shadow:0 0 20px rgba(192,96,255,.4)}
+.stat-sub{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--dim);margin-top:.3rem;letter-spacing:1px}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.toolbar-title{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;color:#fff;letter-spacing:1px;flex:1}
+.filter-select{background:rgba(0,0,0,.6);border:1px solid rgba(0,255,65,.22);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.65rem;padding:.5rem .9rem;outline:none;cursor:pointer;letter-spacing:1px}
+.filter-select:focus{border-color:var(--g)}
+.search-input{background:rgba(0,0,0,.6);border:1px solid rgba(0,255,65,.22);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.65rem;padding:.5rem 1rem;outline:none;width:220px;letter-spacing:.5px}
+.search-input::placeholder{color:rgba(220,255,215,.25)}
+.search-input:focus{border-color:var(--g)}
+.btn-export{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--g);border:1px solid rgba(0,255,65,.35);background:rgba(0,255,65,.07);padding:.5rem 1.2rem;cursor:pointer;letter-spacing:1px;transition:.2s}
+.btn-export:hover{background:rgba(0,255,65,.14);box-shadow:0 0 14px rgba(0,255,65,.1)}
+.btn-refresh{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--cy);border:1px solid rgba(0,238,255,.3);background:rgba(0,238,255,.06);padding:.5rem 1rem;cursor:pointer;letter-spacing:1px;transition:.2s}
+.btn-refresh:hover{background:rgba(0,238,255,.12)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead{background:rgba(0,255,65,.07);border-bottom:1px solid var(--border)}
+th{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--g);letter-spacing:2px;padding:.9rem 1.2rem;text-align:left;white-space:nowrap;text-shadow:0 0 6px rgba(0,255,65,.3)}
+tbody tr{border-bottom:1px solid rgba(0,255,65,.07);transition:.15s;cursor:default}
+tbody tr:hover{background:rgba(0,255,65,.04)}
+td{padding:.85rem 1.2rem;color:var(--text);font-size:.88rem;vertical-align:middle}
+td.mono{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--dim);letter-spacing:.5px}
+.badge-status{font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:.25rem .7rem;border:1px solid;letter-spacing:1px;white-space:nowrap}
+.bs-pago    {color:#00ff41;border-color:rgba(0,255,65,.4);background:rgba(0,255,65,.08)}
+.bs-pendente{color:#ffd000;border-color:rgba(255,208,0,.4);background:rgba(255,208,0,.07)}
+.bs-cancelado{color:#ff1a33;border-color:rgba(255,26,51,.4);background:rgba(255,26,51,.07)}
+.bs-desistiu{color:#888;border-color:rgba(150,150,150,.3);background:rgba(150,150,150,.06)}
+.btn-change-status{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--cy);border:1px solid rgba(0,238,255,.25);background:transparent;padding:.2rem .6rem;cursor:pointer;transition:.15s;letter-spacing:1px}
+.btn-change-status:hover{background:rgba(0,238,255,.1)}
+
+/* EMPTY / LOADING */
+.tbl-msg{text-align:center;padding:3rem;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--dim);letter-spacing:2px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(0,255,65,.2);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MODAL */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#modal.open{display:flex}
+.modal-box{background:#020e02;border:1px solid var(--border);padding:2rem;width:100%;max-width:420px;position:relative}
+.modal-box::before{content:'';position:absolute;top:0;left:2rem;right:2rem;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;color:#fff;margin-bottom:1.2rem;letter-spacing:1px}
+.modal-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--g);letter-spacing:2px;display:block;margin-bottom:.35rem}
+.modal-select{width:100%;background:rgba(0,0,0,.6);border:1px solid rgba(0,255,65,.25);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.75rem;padding:.75rem 1rem;outline:none;margin-bottom:1.2rem;cursor:pointer}
+.modal-btns{display:flex;gap:.8rem;justify-content:flex-end}
+.btn-cancel{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--dim);background:transparent;border:1px solid rgba(255,255,255,.15);padding:.6rem 1.2rem;cursor:pointer;letter-spacing:1px}
+.btn-save{font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;color:#010801;background:var(--g);border:none;padding:.65rem 1.5rem;cursor:pointer;letter-spacing:1px}
+.btn-save:hover{background:#55ff80}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;right:2rem;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#010801;background:var(--g);padding:.7rem 1.4rem;letter-spacing:1px;transform:translateY(80px);opacity:0;transition:.3s;z-index:300;pointer-events:none}
+#toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">ADMIN // CYBERSEC</div>
+    <div class="login-sub">PAINEL DE GESTÃO DE LEADS</div>
+    <label class="login-label">E-MAIL</label>
+    <input class="login-input" id="loginEmail" type="email" placeholder="admin@email.com">
+    <label class="login-label">SENHA</label>
+    <input class="login-input" id="loginPass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">▶ ACESSAR PAINEL</button>
+    <div class="login-err" id="loginErr">Credenciais inválidas.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+  <header>
+    <div class="hdr-logo">CYBERSEC // ADMIN</div>
+    <div class="hdr-right">
+      <span class="hdr-user" id="hdrUser"></span>
+      <button class="btn-logout" onclick="doLogout()">SAIR</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card sc-total">
+        <div class="stat-label">TOTAL DE LEADS</div>
+        <div class="stat-val" id="stTotal">—</div>
+        <div class="stat-sub">cadastros únicos</div>
+      </div>
+      <div class="stat-card sc-pago">
+        <div class="stat-label">PAGAMENTOS CONFIRMADOS</div>
+        <div class="stat-val" id="stPago">—</div>
+        <div class="stat-sub">conversões realizadas</div>
+      </div>
+      <div class="stat-card sc-pend">
+        <div class="stat-label">PENDENTES</div>
+        <div class="stat-val" id="stPend">—</div>
+        <div class="stat-sub">aguardando pagamento</div>
+      </div>
+      <div class="stat-card sc-conv">
+        <div class="stat-label">TAXA DE CONVERSÃO</div>
+        <div class="stat-val" id="stConv">—</div>
+        <div class="stat-sub">leads → pagos</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="toolbar-title">REGISTRO DE LEADS</div>
+      <input class="search-input" id="searchInput" placeholder="Buscar nome ou e-mail..." oninput="renderTable()">
+      <select class="filter-select" id="filterStatus" onchange="renderTable()">
+        <option value="">TODOS OS STATUS</option>
+        <option value="pendente">PENDENTE</option>
+        <option value="pago">PAGO</option>
+        <option value="cancelado">CANCELADO</option>
+        <option value="desistiu">DESISTIU</option>
+      </select>
+      <button class="btn-refresh" onclick="loadLeads()">↻ ATUALIZAR</button>
+      <button class="btn-export" onclick="exportCSV()">⬇ EXPORTAR CSV</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>NOME</th>
+            <th>E-MAIL</th>
+            <th>WHATSAPP</th>
+            <th>STATUS</th>
+            <th>DATA / HORA</th>
+            <th>ORIGEM</th>
+            <th>AÇÃO</th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody">
+          <tr><td colspan="8" class="tbl-msg"><span class="spinner"></span>CARREGANDO...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL STATUS -->
+<div id="modal">
+  <div class="modal-box">
+    <div class="modal-title">ATUALIZAR STATUS DO LEAD</div>
+    <label class="modal-label">NOVO STATUS</label>
+    <select class="modal-select" id="modalStatus">
+      <option value="pendente">PENDENTE</option>
+      <option value="pago">PAGO</option>
+      <option value="cancelado">CANCELADO</option>
+      <option value="desistiu">DESISTIU</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">CANCELAR</button>
+      <button class="btn-save" onclick="saveStatus()">SALVAR</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+                                                   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query }
+                                                   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ─── MESMAS CREDENCIAIS DO index.html ─────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyCJlFHXTrPVgawuuVnKIFIM8Tt8CDWCKA4",
+  authDomain:        "cybersec-leads-a0c5e.firebaseapp.com",
+  projectId:         "cybersec-leads-a0c5e",
+  storageBucket:     "cybersec-leads-a0c5e.firebasestorage.app",
+  messagingSenderId: "763234354305",
+  appId:             "1:763234354305:web:80ee8ba3e5c451ca5ff980",
+  measurementId:     "G-QFDY6HX34W"
+};
+// ──────────────────────────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let allLeads    = [];
+let editingDocId = null;
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+window.doLogin = async function(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.style.display='none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.style.display='block';
+  }
+};
+
+window.doLogout = async function(){
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, user => {
+  if(user){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appScreen').style.display='block';
+    document.getElementById('hdrUser').textContent = user.email;
+    loadLeads();
+  } else {
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('appScreen').style.display='none';
+  }
+});
+
+// ── LOAD DATA ─────────────────────────────────────────────────────────────
+window.loadLeads = async function(){
+  document.getElementById('leadsBody').innerHTML=
+    '<tr><td colspan="8" class="tbl-msg"><span class="spinner"></span>CARREGANDO...</td></tr>';
+  try {
+    const q  = query(collection(db,'leads'), orderBy('criado_em','desc'));
+    const qs = await getDocs(q);
+    allLeads = qs.docs.map(d=>({id:d.id,...d.data()}));
+    updateStats();
+    renderTable();
+  } catch(e){
+    document.getElementById('leadsBody').innerHTML=
+      '<tr><td colspan="8" class="tbl-msg">[ERRO] Falha ao carregar dados.</td></tr>';
+  }
+};
+
+// ── STATS ─────────────────────────────────────────────────────────────────
+function updateStats(){
+  const total = allLeads.length;
+  const pago  = allLeads.filter(l=>l.status_pagamento==='pago').length;
+  const pend  = allLeads.filter(l=>l.status_pagamento==='pendente').length;
+  const conv  = total ? Math.round(pago/total*100)+'%' : '0%';
+  document.getElementById('stTotal').textContent = total;
+  document.getElementById('stPago').textContent  = pago;
+  document.getElementById('stPend').textContent  = pend;
+  document.getElementById('stConv').textContent  = conv;
+}
+
+// ── RENDER TABLE ──────────────────────────────────────────────────────────
+window.renderTable = function(){
+  const q  = document.getElementById('searchInput').value.toLowerCase();
+  const sf = document.getElementById('filterStatus').value;
+  let data = allLeads.filter(l=>{
+    const matchQ  = !q || l.nome?.toLowerCase().includes(q) || l.email?.toLowerCase().includes(q);
+    const matchSt = !sf || l.status_pagamento===sf;
+    return matchQ && matchSt;
+  });
+
+  if(!data.length){
+    document.getElementById('leadsBody').innerHTML=
+      '<tr><td colspan="8" class="tbl-msg">NENHUM REGISTRO ENCONTRADO</td></tr>';
+    return;
+  }
+
+  const statusClass = {pago:'bs-pago',pendente:'bs-pendente',cancelado:'bs-cancelado',desistiu:'bs-desistiu'};
+
+  document.getElementById('leadsBody').innerHTML = data.map((l,i)=>{
+    const dt  = l.criado_em?.toDate ? l.criado_em.toDate() : new Date(l.criado_em?.seconds*1000||0);
+    const dtStr = dt.toLocaleDateString('pt-BR')+' '+dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const origem = l.utm?.utm_source || l.utm?.referrer?.split('/')[2] || '—';
+    const st = l.status_pagamento || 'pendente';
+    return `<tr>
+      <td class="mono">${i+1}</td>
+      <td><strong>${escHtml(l.nome||'—')}</strong></td>
+      <td class="mono">${escHtml(l.email||'—')}</td>
+      <td class="mono">${escHtml(l.whatsapp||'—')}</td>
+      <td><span class="badge-status ${statusClass[st]||'bs-pendente'}">${st.toUpperCase()}</span></td>
+      <td class="mono">${dtStr}</td>
+      <td class="mono">${escHtml(origem)}</td>
+      <td><button class="btn-change-status" onclick="openModal('${l.id}','${st}')">EDITAR</button></td>
+    </tr>`;
+  }).join('');
+};
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ── MODAL STATUS ──────────────────────────────────────────────────────────
+window.openModal = function(docId, currentStatus){
+  editingDocId = docId;
+  document.getElementById('modalStatus').value = currentStatus;
+  document.getElementById('modal').classList.add('open');
+};
+window.closeModal = function(){ document.getElementById('modal').classList.remove('open'); };
+
+window.saveStatus = async function(){
+  const newStatus = document.getElementById('modalStatus').value;
+  try {
+    await updateDoc(doc(db,'leads',editingDocId),{status_pagamento: newStatus});
+    const lead = allLeads.find(l=>l.id===editingDocId);
+    if(lead) lead.status_pagamento = newStatus;
+    closeModal();
+    updateStats();
+    renderTable();
+    showToast('STATUS ATUALIZADO ✓');
+  } catch(e){ showToast('ERRO AO SALVAR'); }
+};
+
+// ── EXPORT CSV ────────────────────────────────────────────────────────────
+window.exportCSV = function(){
+  const rows=[['#','Nome','E-mail','WhatsApp','Status','Data/Hora','UTM Source','UTM Campaign']];
+  allLeads.forEach((l,i)=>{
+    const dt = l.criado_em?.toDate ? l.criado_em.toDate() : new Date(l.criado_em?.seconds*1000||0);
+    rows.push([i+1, l.nome||'', l.email||'', l.whatsapp||'', l.status_pagamento||'', dt.toLocaleString('pt-BR'), l.utm?.utm_source||'', l.utm?.utm_campaign||'']);
+  });
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`leads_cybersec_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+};
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
